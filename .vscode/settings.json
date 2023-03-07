@@ -1,0 +1,7 @@
+{
+    "exportall.config.folderListener": [
+        "/src/common/Interfaces",
+        "/src/common",
+        "/src/trains/germany/db/ice-portal"
+    ]
+}

@@ -1,0 +1,10 @@
+{
+  "name": "onboardapis-js",
+  "version": "0.1",
+  "description": "Library for interfacing with onboard APIs of different transportation providers",
+  "author": "Florian Vick <packages@florian-vick.de>",
+  "license": "MIT",
+  "dependencies": {
+    "typescript": "^4.9.5"
+  }
+}
