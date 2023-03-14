@@ -2,6 +2,8 @@
     "exportall.config.folderListener": [
         "/src/common/Interfaces",
         "/src/common",
-        "/src/trains/germany/db/ice-portal"
+        "/src/trains/germany/db/ice-portal",
+        "/src/trains/germany/db",
+        "/src/trains/germany/flx"
     ]
 }
