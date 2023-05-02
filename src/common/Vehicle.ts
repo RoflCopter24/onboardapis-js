@@ -14,28 +14,12 @@ export class Vehicle<Info extends VehicleInfo> {
         });
     }
 
-    public get currentStation(): Station|undefined {
-        return this.vehicleInfo.currentStation;
-    }
-
-    public get delay(): number {
-        return this.vehicleInfo.delay;
-    }
-
-    public get destination(): string {
-        return this.vehicleInfo.destination;
-    }
-
     public get position(): Position|undefined {
         return this.vehicleInfo.position;
     }
 
     public get speed(): number {
         return this.vehicleInfo.speed;
-    }
-
-    public get type(): string {
-        return this.vehicleInfo.type;
     }
 
     private get vehicleInfo(): Info {

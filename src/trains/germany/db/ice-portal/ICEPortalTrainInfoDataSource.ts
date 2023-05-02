@@ -8,6 +8,7 @@ import { Station } from '../../../../common/Station';
 import { RsStop } from './api/RsStop';
 import { RsConnectionsResponse, RsConnection } from './api/RsConnectionsResponse';
 import { BapStatusResponse } from './api/BapStatusResponse';
+import axios from 'axios';
 
 const API_URL = 'https://iceportal.de';
 const ENDPOINT_TRAIN_STATUS = '/api1/rs/status';
@@ -18,10 +19,10 @@ const ENDPOINT_BAP_STATUS = '/bap/api/bap-service-status'
 export class ICEPortalTrainInfoDataSource implements VehicleDataSource<ICEPortalTrainInfo> {
 
     async getValue(): Promise<ICEPortalTrainInfo> {
-        const rsStatusRequest = new Request(this.url(ENDPOINT_TRAIN_STATUS));
-        const rsTripRequest = new Request(this.url(ENDPOINT_TRIP_INFO));
-        const rsStatusData = await rsStatusRequest.json() as RsStatusResponse;
-        const rsTripData = await rsTripRequest.json() as RsTripInfoResponse;
+        const rsStatusRequest = await axios.get(this.url(ENDPOINT_TRAIN_STATUS));
+        const rsTripRequest = await axios.get(this.url(ENDPOINT_TRIP_INFO));
+        const rsStatusData = rsStatusRequest.data as RsStatusResponse;
+        const rsTripData = rsTripRequest.data as RsTripInfoResponse;
 
         const stations = this.buildStationMap(rsTripData);
         const currentStation = stations.get(rsTripData.trip.stopInfo.actualNext ?? '');
@@ -47,8 +48,8 @@ export class ICEPortalTrainInfoDataSource implements VehicleDataSource<ICEPortal
     }
 
     async getConnectionsForStation(stationId: string): Promise<Connection[]> {
-        const request = new Request(`${ENDPOINT_TRIP_CONNECTIONS}/${stationId}`);
-        const result = await request.json() as RsConnectionsResponse;
+        const request = await axios.get(this.url(`${ENDPOINT_TRIP_CONNECTIONS}/${stationId}`));
+        const result = request.data as RsConnectionsResponse;
         return result.connections.map((connection: RsConnection) => {
             const conn = {
                 destination: connection.station.name,
@@ -91,8 +92,12 @@ export class ICEPortalTrainInfoDataSource implements VehicleDataSource<ICEPortal
     }
 
     private async getBapStatus(): Promise<boolean> {
-        const request = new Request(`${API_URL}/${ENDPOINT_BAP_STATUS}`);
-        const bapStatusResponse = await request.json() as BapStatusResponse;
-        return bapStatusResponse.status;
+        try {
+            const request = await axios.get(this.url(ENDPOINT_BAP_STATUS));
+            const bapStatusResponse = request.data as BapStatusResponse;
+            return bapStatusResponse.status;
+        } catch (err) {
+            return false;
+        }
     }
 }
